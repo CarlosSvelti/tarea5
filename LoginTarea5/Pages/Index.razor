@@ -1,0 +1,72 @@
+﻿@page "/"
+@using LoginTarea5.Data
+@using Blazor.Data
+@inject SecretoServices objservices
+<h1>Bienvenidos al lugar donde guardas tus secretos</h1>
+
+<AuthorizeView>
+    <Authorized>
+
+        <h4>Bienvenido @context.User.Identity.Name</h4>
+        <NavLink class="nav-link" href="/Addsecreto">
+            <span class="oi oi-plus"></span>Añadir Secreto
+        </NavLink>
+        <h2>Registro de detenidos</h2>
+        @if (objinfo == null)
+        {
+            <p><em>Cargando....</em></p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>Id Secreto</td>
+                        <td>Titulo</td>
+                        <td>Descripcion</td>
+                        <td>Valor Monetario</td>
+                        <td>Fecha</td>
+                        <td>Lugar</td>
+                        <td>Latitud</td>
+                        <td>Longitud</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp in objinfo)
+                    {
+                        <tr>
+                            <td>@emp.id</td>
+                            <td>@emp.titulo</td>
+                            <td>@emp.descripcion</td>
+                            <td>@emp.valor</td>
+                            <td>@emp.fecha</td>
+                            <td>@emp.lugar</td>
+                            <td>@emp.latitud</td>
+                            <td>@emp.logitud</td>
+
+
+                            <td>
+                                <a class="btn btn-danger" href="/Borrar/@emp.id">
+                                    <span class="oi oi-trash"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        @code {
+            List<SecretosModel> objinfo;
+            protected override async Task OnInitializedAsync()
+            {
+                objinfo = await Task.Run(() => objservices.GetIlegalinfos());
+            }
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        <h5>Que esperas para iniciar seccion?</h5>
+    </NotAuthorized>
+</AuthorizeView>
